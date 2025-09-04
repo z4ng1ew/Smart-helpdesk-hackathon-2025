@@ -7,7 +7,7 @@
 ```
 ├── backend/          # FastAPI (Егор)
 ├── telegram-bot/     # Python + aiogram (Мовсар)
-├── frontend/         # React (Муслим + Адам)
+├── frontend/         # React (Муслим + Ахмед)
 ├── design/           # Figma-макеты (Медина)
 ├── docs/             # Swagger, архитектура
 └── .github/workflows # CI/CD (DevOps)
