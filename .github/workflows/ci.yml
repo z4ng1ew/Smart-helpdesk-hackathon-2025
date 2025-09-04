@@ -1,0 +1,49 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main, dev]  # Проверяем PR в main и dev
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'backend') || contains(toJson(github.event.head_commit.modified), 'backend')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python deps
+        run: |
+          cd backend
+          pip install -r requirements.txt
+      - name: Run backend tests
+        run: |
+          cd backend
+          pytest --cov=.  # Тесты FastAPI + покрытие
+
+  frontend:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'frontend') || contains(toJson(github.event.head_commit.modified), 'frontend')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node deps
+        run: |
+          cd frontend
+          npm install
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm run test:ci  # Jest + React Testing Library
+      - name: Check linting
+        run: |
+          cd frontend
+          npm run lint  # ESLint
+
+  telegram-bot:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'bot') || contains(toJson(github.event.head_commit.modified), 'telegram-bot')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run bot checks
+        run: |
+          cd telegram-bot
+          python -m pytest  # Тесты aiogram
+          pylint *.py       # Линтер
